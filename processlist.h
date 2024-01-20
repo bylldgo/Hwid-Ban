@@ -51,7 +51,6 @@ private:
                 if (hProcess != NULL) {
                     TerminateProcess(hProcess, 0);
                     CloseHandle(hProcess);
-                    std::wcout << L"Terminated process: " << processName << std::endl;
                 }
             }
         } while (Process32Next(hSnapshot, &pe32));
