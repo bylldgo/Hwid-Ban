@@ -21,3 +21,6 @@ GPU Description
 Windows Version
 
 CPU Brand and Model Information
+
+
+(you can use xorstr or something idk)
