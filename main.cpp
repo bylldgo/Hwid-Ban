@@ -175,6 +175,117 @@ int main() {
         }
     }
 
+    // Disk sürücüleri seri numaralarını al
+    if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_DiskDrive"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
+        while (pEnumerator) {
+            IWbemClassObject* pclsObj = nullptr;
+            ULONG uReturn = 0;
+            if (pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn) != S_OK || uReturn == 0)
+                break;
+
+            VARIANT vtProp;
+            if (pclsObj->Get(L"SerialNumber", 0, &vtProp, 0, 0) == S_OK) {
+                std::wstring diskSerialNumber = static_cast<wchar_t*>(_bstr_t(vtProp.bstrVal));
+                if (!diskSerialNumber.empty()) {
+                    file << L"Disk Serial Number: " << diskSerialNumber << std::endl;
+                }
+                VariantClear(&vtProp);
+            }
+
+            pclsObj->Release();
+        }
+    }
+
+    // Ses kartları seri numaralarını al
+   if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_SoundDevice"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
+       while (pEnumerator) {
+           IWbemClassObject* pclsObj = nullptr;
+           ULONG uReturn = 0;
+           if (pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn) != S_OK || uReturn == 0)
+               break;
+
+           VARIANT vtProp;
+           if (pclsObj->Get(L"PNPDeviceID", 0, &vtProp, 0, 0) == S_OK) {
+               std::wstring soundDeviceSerial = static_cast<wchar_t*>(_bstr_t(vtProp.bstrVal));
+               if (!soundDeviceSerial.empty()) {
+                   file << L"Sound Device Serial: " << soundDeviceSerial << std::endl;
+               }
+               VariantClear(&vtProp);
+           }
+
+            pclsObj->Release();
+        }
+    }
+
+   // USB cihazları seri numaralarını al
+
+   /*
+  if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_USBControllerDevice"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
+      while (pEnumerator) {
+          IWbemClassObject* pclsObj = nullptr;
+          ULONG uReturn = 0;
+          if (pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn) != S_OK || uReturn == 0)
+               break;
+
+           VARIANT vtProp;
+           if (pclsObj->Get(L"Dependent", 0, &vtProp, 0, 0) == S_OK) {
+               std::wstring usbDeviceSerial = static_cast<wchar_t*>(_bstr_t(vtProp.bstrVal));
+               if (!usbDeviceSerial.empty()) {
+                   file << L"USB Device Serial: " << usbDeviceSerial << std::endl;
+               }
+              VariantClear(&vtProp);
+           }
+
+          pclsObj->Release();
+       }
+   }
+   */
+
+   // Bilgisayar adını al
+   if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_ComputerSystem"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
+       while (pEnumerator) {
+           IWbemClassObject* pclsObj = nullptr;
+           ULONG uReturn = 0;
+           if (pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn) != S_OK || uReturn == 0)
+               break;
+
+           VARIANT vtProp;
+           if (pclsObj->Get(L"Name", 0, &vtProp, 0, 0) == S_OK) {
+               std::wstring computerName = static_cast<wchar_t*>(_bstr_t(vtProp.bstrVal));
+               if (!computerName.empty()) {
+                   file << L"Computer Name: " << computerName << std::endl;
+               }
+               VariantClear(&vtProp);
+           }
+
+           pclsObj->Release();
+       }
+   }
+
+   // SMBIOS Manufacturer bilgisini al
+   if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_SystemEnclosure"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
+       while (pEnumerator) {
+           IWbemClassObject* pclsObj = nullptr;
+           ULONG uReturn = 0;
+           if (pEnumerator->Next(WBEM_INFINITE, 1, &pclsObj, &uReturn) != S_OK || uReturn == 0)
+               break;
+
+           VARIANT vtProp;
+
+           // SMBIOS Manufacturer
+           if (pclsObj->Get(L"Manufacturer", 0, &vtProp, 0, 0) == S_OK) {
+               std::wstring smbiosManufacturer = static_cast<wchar_t*>(_bstr_t(vtProp.bstrVal));
+               if (!smbiosManufacturer.empty()) {
+                   file << L"SMBIOS Manufacturer: " << smbiosManufacturer << std::endl;
+               }
+               VariantClear(&vtProp);
+           }
+
+           pclsObj->Release();
+       }
+   }
+
+
     // Ekran Kartı Bilgileri
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_DisplayConfiguration"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
