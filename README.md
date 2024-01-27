@@ -12,7 +12,7 @@ Disk Drive Serial Number
 
 Sound Device Serial Number
 
-Computer Name
+PC Name
 
 SMBIOS Manufacturer Information
 
